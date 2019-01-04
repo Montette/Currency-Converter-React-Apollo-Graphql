@@ -7,7 +7,7 @@ import ApolloClient from 'apollo-boost';
 import gql from "graphql-tag";
 
 const client = new ApolloClient({
-    uri: "https://48p1r2roz4.sse.codesandbox.io"
+    uri: "http://localhost:4000/"
 })
 
 client.query({
@@ -15,6 +15,10 @@ client.query({
     {
         rates(currency: "USD") {
             currency
+        }
+        books {
+            title
+            author
         }
     }
     `
