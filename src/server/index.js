@@ -2,21 +2,13 @@ const { ApolloServer, gql } = require("apollo-server");
 const fetch = require("node-fetch");
 const _ = require("lodash");
 
-const books = [
-    {
-      title: 'Harry Potter and the Chamber of Secrets',
-      author: 'J.K. Rowling',
-    },
-    {
-      title: 'Jurassic Park',
-      author: 'Michael Crichton',
-    },
-  ];
+
 
 const typeDefs = `
   type Query {
     rates(currency: String!): [ExchangeRate]
-    books: [Book]!
+    rate(currency: String!, secondCurrency: String!): [ExchangeRate]
+    currencies: [Currency]!
   }
 
 	type ExchangeRate {
@@ -24,11 +16,12 @@ const typeDefs = `
 		rate: String
 		name: String
     }
-    
-    type Book {
-        title: String!
-        author: String!
-    }
+
+  type Currency {
+    id: String!
+    name: String!
+    min_size: String!
+  }
 `;
 
 
@@ -49,7 +42,46 @@ const resolvers = {
         console.error(e);
       }
     },
-    books: () => books,
+
+    rate: async (root, { currency, secondCurrency }) => {
+      try {
+        const result = await fetch(
+          `https://api.coinbase.com/v2/exchange-rates?currency=${currency}`
+        );
+  
+        const exchangeRates = await result.json();
+  
+        const currencies = _.map(exchangeRates.data.rates, (rate, currency) => ({
+          currency,
+          rate
+        }));
+  
+        return currencies.filter(singleCurrency => singleCurrency.currency === secondCurrency)
+      } catch (e) {
+        console.error(e);
+      }
+    },
+
+    currencies: async () => {
+      try {
+        const result = await fetch(
+          `https://api.coinbase.com/v2/currencies`
+        );
+  
+        const exchangeRates = await result.json();
+  
+        // const currencies = _.map(exchangeRates.data.rates, (rate, currency) => ({
+        //   currency,
+        //   rate
+        // }));
+  
+        return exchangeRates.data;
+
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
   },
   ExchangeRate: {
     name: async ({ currency }) => {
