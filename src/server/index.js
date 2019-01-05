@@ -32,9 +32,9 @@ const resolvers = {
         const results = await fetch(
           `https://api.coinbase.com/v2/exchange-rates?currency=${currency}`
         );
-        const exchangeRates = await results.json();
+        const AllRates = await results.json();
 
-        return _.map(exchangeRates.data.rates, (rate, currency) => ({
+        return _.map(AllRates.data.rates, (rate, currency) => ({
           currency,
           rate
         }));
@@ -49,9 +49,9 @@ const resolvers = {
           `https://api.coinbase.com/v2/exchange-rates?currency=${currency}`
         );
   
-        const exchangeRates = await result.json();
+        const AllRates = await result.json();
   
-        const currencies = _.map(exchangeRates.data.rates, (rate, currency) => ({
+        const currencies = _.map(AllRates.data.rates, (rate, currency) => ({
           currency,
           rate
         }));
@@ -68,14 +68,14 @@ const resolvers = {
           `https://api.coinbase.com/v2/currencies`
         );
   
-        const exchangeRates = await result.json();
+        const AllRates = await result.json();
   
-        // const currencies = _.map(exchangeRates.data.rates, (rate, currency) => ({
+        // const currencies = _.map(AllRates.data.rates, (rate, currency) => ({
         //   currency,
         //   rate
         // }));
   
-        return exchangeRates.data;
+        return AllRates.data;
 
       } catch (e) {
         console.error(e);
